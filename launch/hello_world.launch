@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="arm-control" type="hello_world" name="hello_world" />
+</launch>

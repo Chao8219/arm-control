@@ -15,5 +15,13 @@ find_package(catkin REQUIRED roscpp std_msgs)
 ##             pluginlib
 ##             cmake_modules
 ##             geometric_shapes)
-             
+
+include_directories(
+  include
+  ${catkin_INCLUDE_DIRS}
+)
+
+add_executable(hello_world src/hello_world.cpp)
+target_link_libraries(hello_world ${catkin_LIBRARIES})
+
 catkin_package()
