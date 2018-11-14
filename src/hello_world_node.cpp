@@ -4,10 +4,14 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, "hello_world");
 
-    hello_kinova obj;
-
+    int num = 42;
+    hello_kinova obj(num);
     obj.print_the_ultimate_number();
-    ros::spin();
-    
+    while(ros::ok()){
+        ROS_INFO("This is an example of ROS Info");
+        ros::spinOnce();
+
+        cout << "test" << endl;
+    }
     return 0;
 }

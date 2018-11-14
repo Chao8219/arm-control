@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include "ros/ros.h"
+#include "std_msgs/String.h"
 
 using namespace std;
 
@@ -14,8 +15,10 @@ public:
     hello_kinova(int& num); /**< Overload with the number */
     int ultimate_answer;
     ros::NodeHandle nh;
+    ros::Publisher pub_hello_world;
     
-    void print_the_ultimate_number();            
+    void print_the_ultimate_number();
+    void ros_init();      
 };
 
 

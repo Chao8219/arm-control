@@ -1,3 +1,7 @@
+<?xml version="1.0"?>
 <launch>
+    <!-- The name is argument is whatever you want to name this node;
+    The "type" os the execuable that is made by CMake
+    -->
     <node pkg="arm-control" type="hello_world" name="hello_world" />
 </launch>

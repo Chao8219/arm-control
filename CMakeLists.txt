@@ -5,6 +5,8 @@ add_compile_options(-std=c++11)
 
 find_package(catkin REQUIRED roscpp std_msgs)
 
+catkin_package(CATKIN_DEPENDS roscpp std_msgs)
+
 ## find_package(catkin REQUIRED 
 ##             COMPONENTS
 ##             roscpp
@@ -21,7 +23,8 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(hello_world src/hello_world.cpp)
-target_link_libraries(hello_world ${catkin_LIBRARIES})
+add_library(hello_world_lib src/hello_world.cpp)
 
-catkin_package()
+add_executable(hello_world src/hello_world_node.cpp)
+target_link_libraries(hello_world hello_world_lib ${catkin_LIBRARIES})
+
