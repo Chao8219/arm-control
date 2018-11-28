@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+<script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+
+<script type="text/javascript" type="text/javascript">
+  // Connecting to ROS
+  // -----------------
+
+  // default url 'ws://local:9090'
+  var ros = new ROSLIB.Ros({
+    url : 'ws://161.253.72.254:9090'
+  });
+
+  ros.on('connection', function() {
+    console.log('Connected to websocket server.');
+  });
+
+  ros.on('error', function(error) {
+    console.log('Error connecting to websocket server: ', error);
+  });
+
+  ros.on('close', function() {
+    console.log('Connection to websocket server closed.');
+  });
+
+  // Publishing a Topic
+  // ------------------
+
+  var cmdVel = new ROSLIB.Topic({
+    ros : ros,
+    name : '/cmd_vel',
+    messageType : 'geometry_msgs/Twist'
+  });
+
+  var twist = new ROSLIB.Message({
+    linear : {
+      x : 0.1,
+      y : 0.2,
+      z : 0.3
+    },
+    angular : {
+      x : -0.1,
+      y : -0.2,
+      z : -0.3
+    }
+  });
+  cmdVel.publish(twist);
+
+  // Subscribing to a Topic
+  // ----------------------
+
+  // The default topic name is "/listener"
+  var listener = new ROSLIB.Topic({
+    ros : ros,
+    name : '/mytopic',
+    messageType : 'std_msgs/String'
+  });
+
+  listener.subscribe(function(message) {
+    console.log('Received message on ' + listener.name + ': ' + message.data);
+    listener.unsubscribe();
+  });
+
+  // Calling a service
+  // -----------------
+
+  var addTwoIntsClient = new ROSLIB.Service({
+    ros : ros,
+    name : '/add_two_ints',
+    serviceType : 'rospy_tutorials/AddTwoInts'
+  });
+
+  var request = new ROSLIB.ServiceRequest({
+    a : 1,
+    b : 2
+  });
+
+  addTwoIntsClient.callService(request, function(result) {
+    console.log('Result for service call on '
+      + addTwoIntsClient.name
+      + ': '
+      + result.sum);
+  });
+
+  // Getting and setting a param value
+  // ---------------------------------
+
+  ros.getParams(function(params) {
+    console.log(params);
+  });
+
+  var maxVelX = new ROSLIB.Param({
+    ros : ros,
+    name : 'max_vel_y'
+  });
+
+  maxVelX.set(0.8);
+  maxVelX.get(function(value) {
+    console.log('MAX VAL: ' + value);
+  });
+
+  // New Customized Function
+  var i = 1;
+  function printOut(){
+    console.log('Carpe Diem! ' + 'Stall ' + i);
+    if(i >= 10){
+      console.log('Stalling out!');
+      i = 0;      
+    }
+    i = i + 1;
+  }
+  // incomplete
+  function pubParam(){
+    console.log('Data is setting to the ROS parameter server.');
+    // initialization
+    var pub_joint_0 = 0.0, pub_joint_1 = 0.0, pub_joint_2 = 0.0;
+    var pub_joint_3 = 0.0, pub_joint_4 = 0.0, pub_joint_5 = 0.0;
+    
+    pub_joint_0 = 0 + Number(document.getElementById('pub_joint_0').value);
+    pub_joint_1 = 0 + Number(document.getElementById('pub_joint_1').value);
+    pub_joint_2 = 0 + Number(document.getElementById('pub_joint_2').value);
+    pub_joint_3 = 0 + Number(document.getElementById('pub_joint_3').value);
+    pub_joint_4 = 0 + Number(document.getElementById('pub_joint_4').value);
+    pub_joint_5 = 0 + Number(document.getElementById('pub_joint_5').value);
+
+    var pub_joint_array = [pub_joint_0, pub_joint_1, pub_joint_2, pub_joint_3, pub_joint_4, pub_joint_5];
+    for (i = 0; i < pub_joint_array.length; i++ ){
+      console.log('The ' + i + 'th value in the array is: ' + pub_joint_array[i]);
+    }
+
+  }
+
+</script>
+</head>
+
+<body>
+  <h1>Simple roslib Example</h1>
+  <p>Check your Web Console for output.</p>
+  <br>
+  <form name="ctrlPanel">
+    <p>This a demo panel for transmitting data to ROS.</p>
+    <p>Please type in angles for each joint in radius.</p>
+    <table>
+     <tr><td>Joint 0</td><td><input id="pub_joint_0" name="pub_joint_0" type="text" value="0.0"/></td></tr>
+     <tr><td>Joint 1</td><td><input id="pub_joint_1" name="pub_joint_1" type="text" value="0.0"/></td></tr>
+     <tr><td>Joint 2</td><td><input id="pub_joint_2" name="pub_joint_2" type="text" value="0.0"/></td></tr>
+     <tr><td>Joint 3</td><td><input id="pub_joint_3" name="pub_joint_3" type="text" value="0.0"/></td></tr>
+     <tr><td>Joint 4</td><td><input id="pub_joint_4" name="pub_joint_4" type="text" value="0.0"/></td></tr>
+     <tr><td>Joint 5</td><td><input id="pub_joint_5" name="pub_joint_5" type="text" value="0.0"/></td></tr>
+    </table>
+    <button id="sendMsg" type="button" onclick="pubParam()">Send Values</button>
+  </form>
+
+</body>
+</html>
