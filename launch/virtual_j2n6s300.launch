@@ -1,0 +1,6 @@
+<launch>
+    <include file="$(find j2n6s300_moveit_config)/launch/j2n6s300_virtual_robot_demo.launch">
+        <arg name="full_rviz" value="false" />
+        <arg name="simple_rviz" value="true" />
+    </include>
+</launch>

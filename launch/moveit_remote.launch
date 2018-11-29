@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="kinova_arm_moveit_demo" type="sar_project" name="sar_project" output="screen" />
+</launch>

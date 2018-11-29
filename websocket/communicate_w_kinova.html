@@ -1,8 +1,50 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8" />
+<meta charset="utf-8" content="width=device-width, initial-scale=1" />
 
+<!-- Customized Range Slider Style -->
+<style>
+  .slidecontainer {
+      width: 100%;
+  }
+
+  .slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 15px;
+      border-radius: 5px;
+      background: #d3d3d3;
+      outline: none;
+      opacity: 0.7;
+      -webkit-transition: .2s;
+      transition: opacity .2s;
+  }
+
+  .slider:hover {
+      opacity: 1;
+  }
+
+  .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: #4CAF50;
+      cursor: pointer;
+  }
+
+  .slider::-moz-range-thumb {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: #4CAF50;
+      cursor: pointer;
+}
+</style>
+
+<!-- ROSLIB Javascript Loading -->
 <script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
 <script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
 
@@ -150,32 +192,151 @@
   function shutdownNode(){
     console.log('ROS node is shutting down.');
     bool_signal = true;
-    shutdown_signal.set(bool_signal)
+    shutdown_signal.set(bool_signal);
+  }
+
+  // Read Files
+  function loadFile(o)
+  {
+    var fr = new FileReader();
+    fr.onload = function(e)
+    {
+      showDataFile(e, o);
+    };
+    fr.readAsText(o.files[0]);
+  }
+
+  function showDataFile(e, o)
+  {
+    document.getElementById("data").innerText = e.target.result;
+  }
+
+  // Consistently Sending Values
+  function pubParamConsist(index, correspond_value){
+    pub_joint_default_array[index] = correspond_value;
+    pub_joint_param.set(pub_joint_default_array);
   }
 
 </script>
 </head>
 
 <body>
-  <h1>Simple roslib Example</h1>
-  <p>Check your Web Console for output.</p>
+  <h1>Kinova Remote Control</h1>
+  <p>This page is developed by roslib and javascript.</p>
+  <p>Please check your Web Console for output.</p>
   <br>
+  <h3>1. Push Joint Values Manually</h3>
   <form name="ctrlPanel">
-    <p>This a demo panel for transmitting data to ROS parameter server.</p>
-    <p>Please type in angles for each joint in degree.</p>
-    <p>Note: the values will be sent to ROS server through a list</p>
-    <table>
-     <tr><td>Joint 0</td><td><input id="pub_joint_0" name="pub_joint_0" type="text" value="0.0"/></td></tr>
-     <tr><td>Joint 1</td><td><input id="pub_joint_1" name="pub_joint_1" type="text" value="0.0"/></td></tr>
-     <tr><td>Joint 2</td><td><input id="pub_joint_2" name="pub_joint_2" type="text" value="0.0"/></td></tr>
-     <tr><td>Joint 3</td><td><input id="pub_joint_3" name="pub_joint_3" type="text" value="0.0"/></td></tr>
-     <tr><td>Joint 4</td><td><input id="pub_joint_4" name="pub_joint_4" type="text" value="0.0"/></td></tr>
-     <tr><td>Joint 5</td><td><input id="pub_joint_5" name="pub_joint_5" type="text" value="0.0"/></td></tr>
-    </table>
-    <button id="sendMsg" type="button" onclick="pubParam()">Send Values</button>
-
-    <button id="sendCommand" type="button" onclick="shutdownNode()">Shutdown Node</button>
+    <p>This a panel for transmitting data to ROS parameter server.</p>
+    <p>Please type in angles for each joint in degree, and press send value to push them to ROS param server.</p>
+    <p>When you are done playing, please press shutdown node.</p>
+    <p>Note: the values will be sent to ROS server through a list.</p>
+    <center>
+      <table>
+        <tr><td>Joint 0</td><td><input id="pub_joint_0" name="pub_joint_0" type="text" value="90.0"/></td></tr>
+        <tr><td>Joint 1</td><td><input id="pub_joint_1" name="pub_joint_1" type="text" value="-90.0"/></td></tr>
+        <tr><td>Joint 2</td><td><input id="pub_joint_2" name="pub_joint_2" type="text" value="90.0"/></td></tr>
+        <tr><td>Joint 3</td><td><input id="pub_joint_3" name="pub_joint_3" type="text" value="-90.0"/></td></tr>
+        <tr><td>Joint 4</td><td><input id="pub_joint_4" name="pub_joint_4" type="text" value="90.0"/></td></tr>
+        <tr><td>Joint 5</td><td><input id="pub_joint_5" name="pub_joint_5" type="text" value="-90.0"/></td></tr>
+        <tr><td></td></tr>
+      </table>
+      <button id="sendMsg" type="button" onclick="pubParam()">Send Values</button>
+      <button id="sendCommand" type="button" onclick="shutdownNode()">Shutdown Node</button>
+    </center>
   </form>
+
+  <br>
+  <h3>2. Push Joint Values through Data File</h3>
+  Select file to read <input type="file" onchange="loadFile(this)">
+  <pre id="data"></pre>
+
+  <br>
+  <h3>3. Push Joint Values Automatically</h3>
+
+  <div class="slidecontainer">
+    <input type="range" min="-180.0" max="180" value="90.0" step="0.1" class="slider" id="joint_range_0">
+    <center><p>Joint 0: <span id="joint_range_value_0"></span></p></center>
+
+    <input type="range" min="-180.0" max="180" value="-90.0" step="0.1" class="slider" id="joint_range_1">
+    <center><p>Joint 1: <span id="joint_range_value_1"></span></p></center>
+
+    <input type="range" min="-180.0" max="180" value="90.0" step="0.1" class="slider" id="joint_range_2">
+    <center><p>Joint 2: <span id="joint_range_value_2"></span></p></center>
+
+    <input type="range" min="-180.0" max="180" value="-90.0" step="0.1" class="slider" id="joint_range_3">
+    <center><p>Joint 3: <span id="joint_range_value_3"></span></p></center>
+
+    <input type="range" min="-180.0" max="180" value="90.0" step="0.1" class="slider" id="joint_range_4">
+    <center><p>Joint 4: <span id="joint_range_value_4"></span></p></center>
+
+    <input type="range" min="-180.0" max="180" value="-90.0" step="0.1" class="slider" id="joint_range_5">
+    <center><p>Joint 5: <span id="joint_range_value_5"></span></p></center>
+  </div>
+
+  <script>
+    var slider_0 = document.getElementById("joint_range_" + 0);
+    var output_0 = document.getElementById("joint_range_value_" + 0);
+    output_0.innerHTML = slider_0.value;
+    slider_0.oninput = function() {
+      var silder_value_0 = 0.0 + Number(this.value);
+      output_0.innerHTML = this.value;
+      // console.log("Joint 0: " + this.value);
+      pubParamConsist(0, silder_value_0);
+    }
+
+    var slider_1 = document.getElementById("joint_range_" + 1);
+    var output_1 = document.getElementById("joint_range_value_" + 1);
+    output_1.innerHTML = slider_1.value;
+    slider_1.oninput = function() {
+      var silder_value_1 = 0.0 + Number(this.value);
+      output_1.innerHTML = this.value;
+      // console.log("Joint 1: " + this.value);
+      pubParamConsist(1, silder_value_1);
+    }
+
+    var slider_2 = document.getElementById("joint_range_" + 2);
+    var output_2 = document.getElementById("joint_range_value_" + 2);
+    output_2.innerHTML = slider_2.value;
+    slider_2.oninput = function() {
+      var silder_value_2 = 0.0 + Number(this.value);
+      output_2.innerHTML = this.value;
+      // console.log("Joint 2: " + this.value);
+      pubParamConsist(2, silder_value_2);
+    }
+
+    var slider_3 = document.getElementById("joint_range_" + 3);
+    var output_3 = document.getElementById("joint_range_value_" + 3);
+    output_3.innerHTML = slider_3.value;
+    slider_3.oninput = function() {
+      var silder_value_3 = 0.0 + Number(this.value);
+      output_3.innerHTML = this.value;
+      // console.log("Joint 3: " + this.value);
+      pubParamConsist(3, silder_value_3);
+    }
+
+    var slider_4 = document.getElementById("joint_range_" + 4);
+    var output_4 = document.getElementById("joint_range_value_" + 4);
+    output_4.innerHTML = slider_4.value;
+    slider_4.oninput = function() {
+      var silder_value_4 = 0.0 + Number(this.value);
+      output_4.innerHTML = this.value;
+      // console.log("Joint 4: " + this.value);
+      pubParamConsist(4, silder_value_4);
+    }
+
+    var slider_5 = document.getElementById("joint_range_" + 5);
+    var output_5 = document.getElementById("joint_range_value_" + 5);
+    output_5.innerHTML = slider_5.value;
+    slider_5.oninput = function() {
+      var silder_value_5 = 0.0 + Number(this.value);
+      output_5.innerHTML = this.value;
+      // console.log("Joint 5: " + this.value);
+      pubParamConsist(5, silder_value_5);
+    }
+  </script>
+
+  <center><button id="sendCommand" type="button" onclick="shutdownNode()">Shutdown Node</button></center>
 
 </body>
 </html>
