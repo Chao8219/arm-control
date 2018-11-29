@@ -27,6 +27,7 @@
     console.log('Connection to websocket server closed.');
   });
 
+/*
   // Publishing a Topic
   // ------------------
 
@@ -53,10 +54,9 @@
   // Subscribing to a Topic
   // ----------------------
 
-  // The default topic name is "/listener"
   var listener = new ROSLIB.Topic({
     ros : ros,
-    name : '/mytopic',
+    name : '/listener',
     messageType : 'std_msgs/String'
   });
 
@@ -103,35 +103,49 @@
     console.log('MAX VAL: ' + value);
   });
 
-  // New Customized Function
-  var i = 1;
-  function printOut(){
-    console.log('Carpe Diem! ' + 'Stall ' + i);
-    if(i >= 10){
-      console.log('Stalling out!');
-      i = 0;      
-    }
-    i = i + 1;
-  }
-  // incomplete
+*/
+
+  // push configuration to ROS Parameter Server
+  var pub_joint_param = new ROSLIB.Param({
+    ros : ros,
+    name: 'pub_joint_param'
+  });
+
   function pubParam(){
     console.log('Data is setting to the ROS parameter server.');
+    
     // initialization
     var pub_joint_0 = 0.0, pub_joint_1 = 0.0, pub_joint_2 = 0.0;
     var pub_joint_3 = 0.0, pub_joint_4 = 0.0, pub_joint_5 = 0.0;
     
-    pub_joint_0 = 0 + Number(document.getElementById('pub_joint_0').value);
-    pub_joint_1 = 0 + Number(document.getElementById('pub_joint_1').value);
-    pub_joint_2 = 0 + Number(document.getElementById('pub_joint_2').value);
-    pub_joint_3 = 0 + Number(document.getElementById('pub_joint_3').value);
-    pub_joint_4 = 0 + Number(document.getElementById('pub_joint_4').value);
-    pub_joint_5 = 0 + Number(document.getElementById('pub_joint_5').value);
+    // get values
+    pub_joint_0 = 0.0 + Number(document.getElementById('pub_joint_0').value);
+    pub_joint_1 = 0.0 + Number(document.getElementById('pub_joint_1').value);
+    pub_joint_2 = 0.0 + Number(document.getElementById('pub_joint_2').value);
+    pub_joint_3 = 0.0 + Number(document.getElementById('pub_joint_3').value);
+    pub_joint_4 = 0.0 + Number(document.getElementById('pub_joint_4').value);
+    pub_joint_5 = 0.0 + Number(document.getElementById('pub_joint_5').value);
 
     var pub_joint_array = [pub_joint_0, pub_joint_1, pub_joint_2, pub_joint_3, pub_joint_4, pub_joint_5];
     for (i = 0; i < pub_joint_array.length; i++ ){
       console.log('The ' + i + 'th value in the array is: ' + pub_joint_array[i]);
     }
 
+    pub_joint_param.set(pub_joint_array);
+  }
+
+  // shutdown ROS node remotely
+  var shutdown_signal = new ROSLIB.Param({
+    ros : ros,
+    name: 'shutdown_signal'
+  });
+
+  var bool_signal = false;
+
+  function shutdownNode(){
+    console.log('ROS node is shutting down.');
+    bool_signal = true;
+    shutdown_signal.set(bool_signal)
   }
 
 </script>
@@ -142,8 +156,9 @@
   <p>Check your Web Console for output.</p>
   <br>
   <form name="ctrlPanel">
-    <p>This a demo panel for transmitting data to ROS.</p>
-    <p>Please type in angles for each joint in radius.</p>
+    <p>This a demo panel for transmitting data to ROS parameter server.</p>
+    <p>Please type in angles for each joint in degree.</p>
+    <p>Note: the values will be sent to ROS server through a list</p>
     <table>
      <tr><td>Joint 0</td><td><input id="pub_joint_0" name="pub_joint_0" type="text" value="0.0"/></td></tr>
      <tr><td>Joint 1</td><td><input id="pub_joint_1" name="pub_joint_1" type="text" value="0.0"/></td></tr>
@@ -153,6 +168,8 @@
      <tr><td>Joint 5</td><td><input id="pub_joint_5" name="pub_joint_5" type="text" value="0.0"/></td></tr>
     </table>
     <button id="sendMsg" type="button" onclick="pubParam()">Send Values</button>
+
+    <button id="sendCommand" type="button" onclick="shutdownNode()">Shutdown Node</button>
   </form>
 
 </body>
