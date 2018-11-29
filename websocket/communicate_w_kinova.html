@@ -27,7 +27,8 @@
     console.log('Connection to websocket server closed.');
   });
 
-/*
+/* Useless block for now
+
   // Publishing a Topic
   // ------------------
 
@@ -110,6 +111,10 @@
     ros : ros,
     name: 'pub_joint_param'
   });
+
+  // Publish default value
+  var pub_joint_default_array = [90.0, -90.0, 90.0, -90.0, 90.0, -90.0];
+  pub_joint_param.set(pub_joint_default_array);
 
   function pubParam(){
     console.log('Data is setting to the ROS parameter server.');
