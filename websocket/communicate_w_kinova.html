@@ -159,7 +159,7 @@ table#t01 {
   });
 
   // Publish default value
-  var pub_joint_default_array = [90.0, -90.0, 90.0, -90.0, 90.0, -90.0];
+  var pub_joint_default_array = [0.0, 180.0, 25.0, -90.0, 0.0, 90.0];
   pub_joint_param.set(pub_joint_default_array);
 
   function pubParam(){
@@ -220,7 +220,30 @@ table#t01 {
     pub_joint_default_array[index] = correspond_value;
     pub_joint_param.set(pub_joint_default_array);
   }
+  
+  // Reset Values to Default
+  var pub_joint_default_string = ["0.0", "180.0", "25.0", "-90.0", "0.0", "90.0"];
+  function resetValues(){
+    for(var j = 0; j <=5 ; j++){
+      document.getElementById("pub_joint_" + j).value = pub_joint_default_string[j];
+      document.getElementById("joint_range_" + j).value = pub_joint_default_string[j];
+      document.getElementById("joint_range_value_" + j).value = pub_joint_default_string[j];
+      document.getElementById("joint_range_value_" + j).innerHTML = pub_joint_default_string[j];
+    } 
+  }
 
+  // Set Values to Starting Pose
+  var pub_joint_starting_pose_string = ["0.0", "49.0", "137.0", "-90.0", "0.0", "90.0"];
+  function setValuesStartingPose(){
+    for(var j = 0; j <=5 ; j++){
+      document.getElementById("pub_joint_" + j).value = pub_joint_starting_pose_string[j];
+      document.getElementById("joint_range_" + j).value = pub_joint_starting_pose_string[j];
+      document.getElementById("joint_range_value_" + j).value = pub_joint_starting_pose_string[j];
+      document.getElementById("joint_range_value_" + j).innerHTML = pub_joint_starting_pose_string[j];
+    } 
+  }
+
+  window.onload = resetValues;
 </script>
 </head>
 
@@ -230,6 +253,7 @@ table#t01 {
   <p>Please check your Web Console for output.</p>
   <br>
   <p>You can choose either way to control the robot: type in number or slide these range sliders.</p>
+  <p>Please notice that, everytime you reload this page, the robot will be folding back to default position.</p>
   <p>Have Fun!</p>
   <h3>1. Push Joint Values Manually</h3>
   <form name="ctrlPanel">
@@ -241,26 +265,30 @@ table#t01 {
       <table id=t01>
         <tr><td>Joint Name</td><td>&nbsp;&nbsp;Joint Value (&#176;)</td><td>Range (&#176;)</td></tr>
         <tr><td>Joint 0</td>
-          <td><input id="pub_joint_0" name="pub_joint_0" type="text" value="0.0" size="1.0"/></td>
+          <td><input id="pub_joint_0" name="pub_joint_0" type="text" size="1.0"/></td>
           <td>(-180.0, 180.0)</td></tr>
         <tr><td>Joint 1</td>
-          <td><input id="pub_joint_1" name="pub_joint_1" type="text" value="47.0" size="1.0"/></td>
+          <td><input id="pub_joint_1" name="pub_joint_1" type="text" size="1.0"/></td>
           <td>(48.0, 313.0)</td></tr>
         <tr><td>Joint 2</td>
-          <td><input id="pub_joint_2" name="pub_joint_2" type="text" value="137.0" size="1.0"/></td>
+          <td><input id="pub_joint_2" name="pub_joint_2" type="text" size="1.0"/></td>
           <td>(25.0, 342.0)</td></tr>
         <tr><td>Joint 3</td>
-          <td><input id="pub_joint_3" name="pub_joint_3" type="text" value="-90.0" size="1.0"/></td>
+          <td><input id="pub_joint_3" name="pub_joint_3" type="text" size="1.0"/></td>
           <td>(-180.0, 180.0)</td></tr>
         <tr><td>Joint 4</td>
-          <td><input id="pub_joint_4" name="pub_joint_4" type="text" value="0.0" size="1.0"/></td>
+          <td><input id="pub_joint_4" name="pub_joint_4" type="text" size="1.0"/></td>
           <td>(-180.0, 180.0)</td></tr>
         <tr><td>Joint 5</td>
-          <td><input id="pub_joint_5" name="pub_joint_5" type="text" value="90.0" size="1.0"/></td>
+          <td><input id="pub_joint_5" name="pub_joint_5" type="text" size="1.0"/></td>
           <td>(-180.0, 180.0)</td></tr>
         <tr><td></td><td></td><td></td></tr>
       </table>
+      <br>
       <button id="sendMsg" type="button" onclick="pubParam()">Send Values</button>
+      <button id="setStartingPose" type="button" onclick="setValuesStartingPose()">Set Starting Pose</button>
+      <button id="reset" type="button" onclick="resetValues()">Reset Values</button>
+      <br>
       <button id="sendCommand" type="button" onclick="shutdownNode()">Shutdown Node</button>
     </center>
   </form>
@@ -274,88 +302,93 @@ table#t01 {
   <h3>3. Push Joint Values Automatically</h3>
   <br>
   <div class="slidecontainer">
-    <input type="range" min="-180.0" max="180" value="0.0" step="0.1" class="slider" id="joint_range_0">
+    <input type="range" min="-180.0" max="180" step="0.1" class="slider" id="joint_range_0" />
     <center><p>Joint 0: <span id="joint_range_value_0"></span>&#176;</p></center>
 
-    <input type="range" min="48.0" max="312.0" value="47.0" step="0.1" class="slider" id="joint_range_1">
+    <input type="range" min="48.0" max="312.0" step="0.1" class="slider" id="joint_range_1" />
     <center><p>Joint 1: <span id="joint_range_value_1"></span>&#176;</p></center>
 
-    <input type="range" min="25.0" max="342.0" value="137.0" step="0.1" class="slider" id="joint_range_2">
+    <input type="range" min="24.0" max="342.0" step="0.1" class="slider" id="joint_range_2" />
     <center><p>Joint 2: <span id="joint_range_value_2"></span>&#176;</p></center>
 
-    <input type="range" min="-180.0" max="180" value="-90.0" step="0.1" class="slider" id="joint_range_3">
+    <input type="range" min="-180.0" max="180.0" step="0.1" class="slider" id="joint_range_3" />
     <center><p>Joint 3: <span id="joint_range_value_3"></span>&#176;</p></center>
 
-    <input type="range" min="-180.0" max="180" value="0.0" step="0.1" class="slider" id="joint_range_4">
+    <input type="range" min="-180.0" max="180.0" step="0.1" class="slider" id="joint_range_4" />
     <center><p>Joint 4: <span id="joint_range_value_4"></span>&#176;</p></center>
 
-    <input type="range" min="-180.0" max="180" value="90.0" step="0.1" class="slider" id="joint_range_5">
+    <input type="range" min="-180.0" max="180.0" step="0.1" class="slider" id="joint_range_5" />
     <center><p>Joint 5: <span id="joint_range_value_5"></span>&#176;</p></center>
   </div>
 
   <script>
     var slider_0 = document.getElementById("joint_range_" + 0);
-    var output_0 = document.getElementById("joint_range_value_" + 0);
-    output_0.innerHTML = slider_0.value;
+    var slider_output_0 = document.getElementById("joint_range_value_" + 0);
+    slider_output_0.innerHTML = slider_0.value;
     slider_0.oninput = function() {
       var silder_value_0 = 0.0 + Number(this.value);
-      output_0.innerHTML = this.value;
+      slider_output_0.innerHTML = this.value;
       // console.log("Joint 0: " + this.value);
       pubParamConsist(0, silder_value_0);
     }
 
     var slider_1 = document.getElementById("joint_range_" + 1);
-    var output_1 = document.getElementById("joint_range_value_" + 1);
-    output_1.innerHTML = slider_1.value;
+    var slider_output_1 = document.getElementById("joint_range_value_" + 1);
+    slider_output_1.innerHTML = slider_1.value;
     slider_1.oninput = function() {
       var silder_value_1 = 0.0 + Number(this.value);
-      output_1.innerHTML = this.value;
+      slider_output_1.innerHTML = this.value;
       // console.log("Joint 1: " + this.value);
       pubParamConsist(1, silder_value_1);
     }
 
     var slider_2 = document.getElementById("joint_range_" + 2);
-    var output_2 = document.getElementById("joint_range_value_" + 2);
-    output_2.innerHTML = slider_2.value;
+    var slider_output_2 = document.getElementById("joint_range_value_" + 2);
+    slider_output_2.innerHTML = slider_2.value;
     slider_2.oninput = function() {
       var silder_value_2 = 0.0 + Number(this.value);
-      output_2.innerHTML = this.value;
+      slider_output_2.innerHTML = this.value;
       // console.log("Joint 2: " + this.value);
       pubParamConsist(2, silder_value_2);
     }
 
     var slider_3 = document.getElementById("joint_range_" + 3);
-    var output_3 = document.getElementById("joint_range_value_" + 3);
-    output_3.innerHTML = slider_3.value;
+    var slider_output_3 = document.getElementById("joint_range_value_" + 3);
+    slider_output_3.innerHTML = slider_3.value;
     slider_3.oninput = function() {
       var silder_value_3 = 0.0 + Number(this.value);
-      output_3.innerHTML = this.value;
+      slider_output_3.innerHTML = this.value;
       // console.log("Joint 3: " + this.value);
       pubParamConsist(3, silder_value_3);
     }
 
     var slider_4 = document.getElementById("joint_range_" + 4);
-    var output_4 = document.getElementById("joint_range_value_" + 4);
-    output_4.innerHTML = slider_4.value;
+    var slider_output_4 = document.getElementById("joint_range_value_" + 4);
+    slider_output_4.innerHTML = slider_4.value;
     slider_4.oninput = function() {
       var silder_value_4 = 0.0 + Number(this.value);
-      output_4.innerHTML = this.value;
+      slider_output_4.innerHTML = this.value;
       // console.log("Joint 4: " + this.value);
       pubParamConsist(4, silder_value_4);
     }
 
     var slider_5 = document.getElementById("joint_range_" + 5);
-    var output_5 = document.getElementById("joint_range_value_" + 5);
-    output_5.innerHTML = slider_5.value;
+    var slider_output_5 = document.getElementById("joint_range_value_" + 5);
+    slider_output_5.innerHTML = slider_5.value;
     slider_5.oninput = function() {
       var silder_value_5 = 0.0 + Number(this.value);
-      output_5.innerHTML = this.value;
+      slider_output_5.innerHTML = this.value;
       // console.log("Joint 5: " + this.value);
       pubParamConsist(5, silder_value_5);
     }
   </script>
 
-  <center><button id="sendCommand" type="button" onclick="shutdownNode()">Shutdown Node</button></center>
+  <center>
+    <button id="setStartingPose" type="button" onclick="setValuesStartingPose()">Set Starting Pose</button>
+    <button id="reset" type="button" onclick="resetValues()">Reset Values</button>
+    <br>
+    <button id="sendCommand" type="button" onclick="shutdownNode()">Shutdown Node</button>
+  </center>
 
 </body>
 </html>
