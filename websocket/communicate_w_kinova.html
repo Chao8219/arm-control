@@ -42,6 +42,10 @@
       background: #4CAF50;
       cursor: pointer;
 }
+
+table#t01 {
+  text-align: center;
+}
 </style>
 
 <!-- ROSLIB Javascript Loading -->
@@ -225,6 +229,8 @@
   <p>This page is developed by roslib and javascript.</p>
   <p>Please check your Web Console for output.</p>
   <br>
+  <p>You can choose either way to control the robot: type in number or slide these range sliders.</p>
+  <p>Have Fun!</p>
   <h3>1. Push Joint Values Manually</h3>
   <form name="ctrlPanel">
     <p>This a panel for transmitting data to ROS parameter server.</p>
@@ -232,14 +238,27 @@
     <p>When you are done playing, please press shutdown node.</p>
     <p>Note: the values will be sent to ROS server through a list.</p>
     <center>
-      <table>
-        <tr><td>Joint 0</td><td><input id="pub_joint_0" name="pub_joint_0" type="text" value="90.0"/></td></tr>
-        <tr><td>Joint 1</td><td><input id="pub_joint_1" name="pub_joint_1" type="text" value="-90.0"/></td></tr>
-        <tr><td>Joint 2</td><td><input id="pub_joint_2" name="pub_joint_2" type="text" value="90.0"/></td></tr>
-        <tr><td>Joint 3</td><td><input id="pub_joint_3" name="pub_joint_3" type="text" value="-90.0"/></td></tr>
-        <tr><td>Joint 4</td><td><input id="pub_joint_4" name="pub_joint_4" type="text" value="90.0"/></td></tr>
-        <tr><td>Joint 5</td><td><input id="pub_joint_5" name="pub_joint_5" type="text" value="-90.0"/></td></tr>
-        <tr><td></td></tr>
+      <table id=t01>
+        <tr><td>Joint Name</td><td>&nbsp;&nbsp;Joint Value (&#176;)</td><td>Range (&#176;)</td></tr>
+        <tr><td>Joint 0</td>
+          <td><input id="pub_joint_0" name="pub_joint_0" type="text" value="0.0" size="1.0"/></td>
+          <td>(-180.0, 180.0)</td></tr>
+        <tr><td>Joint 1</td>
+          <td><input id="pub_joint_1" name="pub_joint_1" type="text" value="47.0" size="1.0"/></td>
+          <td>(48.0, 313.0)</td></tr>
+        <tr><td>Joint 2</td>
+          <td><input id="pub_joint_2" name="pub_joint_2" type="text" value="137.0" size="1.0"/></td>
+          <td>(25.0, 342.0)</td></tr>
+        <tr><td>Joint 3</td>
+          <td><input id="pub_joint_3" name="pub_joint_3" type="text" value="-90.0" size="1.0"/></td>
+          <td>(-180.0, 180.0)</td></tr>
+        <tr><td>Joint 4</td>
+          <td><input id="pub_joint_4" name="pub_joint_4" type="text" value="0.0" size="1.0"/></td>
+          <td>(-180.0, 180.0)</td></tr>
+        <tr><td>Joint 5</td>
+          <td><input id="pub_joint_5" name="pub_joint_5" type="text" value="90.0" size="1.0"/></td>
+          <td>(-180.0, 180.0)</td></tr>
+        <tr><td></td><td></td><td></td></tr>
       </table>
       <button id="sendMsg" type="button" onclick="pubParam()">Send Values</button>
       <button id="sendCommand" type="button" onclick="shutdownNode()">Shutdown Node</button>
@@ -253,25 +272,25 @@
 
   <br>
   <h3>3. Push Joint Values Automatically</h3>
-
+  <br>
   <div class="slidecontainer">
-    <input type="range" min="-180.0" max="180" value="90.0" step="0.1" class="slider" id="joint_range_0">
-    <center><p>Joint 0: <span id="joint_range_value_0"></span></p></center>
+    <input type="range" min="-180.0" max="180" value="0.0" step="0.1" class="slider" id="joint_range_0">
+    <center><p>Joint 0: <span id="joint_range_value_0"></span>&#176;</p></center>
 
-    <input type="range" min="-180.0" max="180" value="-90.0" step="0.1" class="slider" id="joint_range_1">
-    <center><p>Joint 1: <span id="joint_range_value_1"></span></p></center>
+    <input type="range" min="48.0" max="312.0" value="47.0" step="0.1" class="slider" id="joint_range_1">
+    <center><p>Joint 1: <span id="joint_range_value_1"></span>&#176;</p></center>
 
-    <input type="range" min="-180.0" max="180" value="90.0" step="0.1" class="slider" id="joint_range_2">
-    <center><p>Joint 2: <span id="joint_range_value_2"></span></p></center>
+    <input type="range" min="25.0" max="342.0" value="137.0" step="0.1" class="slider" id="joint_range_2">
+    <center><p>Joint 2: <span id="joint_range_value_2"></span>&#176;</p></center>
 
     <input type="range" min="-180.0" max="180" value="-90.0" step="0.1" class="slider" id="joint_range_3">
-    <center><p>Joint 3: <span id="joint_range_value_3"></span></p></center>
+    <center><p>Joint 3: <span id="joint_range_value_3"></span>&#176;</p></center>
 
-    <input type="range" min="-180.0" max="180" value="90.0" step="0.1" class="slider" id="joint_range_4">
-    <center><p>Joint 4: <span id="joint_range_value_4"></span></p></center>
+    <input type="range" min="-180.0" max="180" value="0.0" step="0.1" class="slider" id="joint_range_4">
+    <center><p>Joint 4: <span id="joint_range_value_4"></span>&#176;</p></center>
 
-    <input type="range" min="-180.0" max="180" value="-90.0" step="0.1" class="slider" id="joint_range_5">
-    <center><p>Joint 5: <span id="joint_range_value_5"></span></p></center>
+    <input type="range" min="-180.0" max="180" value="90.0" step="0.1" class="slider" id="joint_range_5">
+    <center><p>Joint 5: <span id="joint_range_value_5"></span>&#176;</p></center>
   </div>
 
   <script>

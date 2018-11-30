@@ -43,3 +43,10 @@ http://wiki.ros.org/ROS/Tutorials/WritingPublisherSubscriber%28c%2B%2B%29
 https://answers.ros.org/question/250959/connecting-different-computers-via-rosbridge/
 
 [Back to Top](#contents)
+
+## 3 Todo List
+
+- [ ] Add end-effector coordinate control
+- [ ] Complete automatic file reading in JS page.(for .txt)
+- [ ] Complete automatic file reading in JS page.(for .csv)
+- [ ] Update initial position to "Starting Pose"
