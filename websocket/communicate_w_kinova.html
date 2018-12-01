@@ -48,6 +48,12 @@ table#t01 {
 }
 </style>
 
+<script
+			  src="http://code.jquery.com/jquery-3.3.1.min.js"
+			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+			  crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.8.9/jquery.csv.min.js"></script>
+
 <!-- ROSLIB Javascript Loading -->
 <script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
 <script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
@@ -178,9 +184,7 @@ table#t01 {
     pub_joint_5 = 0.0 + Number(document.getElementById('pub_joint_5').value);
 
     var pub_joint_array = [pub_joint_0, pub_joint_1, pub_joint_2, pub_joint_3, pub_joint_4, pub_joint_5];
-    for (i = 0; i < pub_joint_array.length; i++ ){
-      console.log('The ' + i + 'th value in the array is: ' + pub_joint_array[i]);
-    }
+    console.log('The vector you are sending is: [' + pub_joint_array + ']');
 
     pub_joint_param.set(pub_joint_array);
   }
@@ -244,7 +248,14 @@ table#t01 {
   }
 
   window.onload = resetValues;
+
+  function readCsv(){
+    var csv_result = document.getElementById("data").value;
+    var csv_to_array = $.csv.toArray(csv_result);
+    console.log(csv_to_array);
+  }
 </script>
+
 </head>
 
 <body>
@@ -297,6 +308,7 @@ table#t01 {
   <h3>2. Push Joint Values through Data File</h3>
   Select file to read <input type="file" onchange="loadFile(this)">
   <pre id="data"></pre>
+  <button id="testTest" type="button" onclick="readCsv()">Click Me</button>
 
   <br>
   <h3>3. Push Joint Values Automatically</h3>
