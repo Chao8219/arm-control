@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" content="width=device-width, initial-scale=1" />
+
+<!-- align the text inside the table -->
+<style>
+table#t01 {
+  text-align: center;
+}
+</style>
+
+<!-- ROSLIB Javascript Loading -->
+<script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+
+<script type="text/javascript" type="text/javascript">
+  // Connecting to ROS
+  // -----------------
+
+  // default url 'ws://local:9090'
+  var ros = new ROSLIB.Ros({
+    url : 'ws://161.253.72.254:9090'
+  });
+
+  ros.on('connection', function() {
+    console.log('Connected to websocket server.');
+  });
+
+  ros.on('error', function(error) {
+    console.log('Error connecting to websocket server: ', error);
+  });
+
+  ros.on('close', function() {
+    console.log('Connection to websocket server closed.');
+  });
+
+  // push configuration to ROS Parameter Server
+  var pub_joint_param = new ROSLIB.Param({
+    ros : ros,
+    name: 'pub_joint_param'
+  });
+
+  // shutdown ROS node remotely
+  var shutdown_signal = new ROSLIB.Param({
+    ros : ros,
+    name: 'shutdown_signal'
+  });
+
+  var bool_signal = false;
+
+  function shutdownNode(){
+    console.log('ROS node is shutting down.');
+    bool_signal = true;
+    shutdown_signal.set(bool_signal);
+  }
+
+
+
+  // read paramets, "/wtf" is the test params name.
+  // you don't need it in real code.
+  var wtf_test = new ROSLIB.Param({
+    ros : ros,
+    name: 'wtf'
+  });
+
+  function refreshData(){
+    
+    pub_joint_param.get(function(value){
+      for(var i = 0; i <= 5; i++){
+        document.getElementById("joint_value_" + i).innerHTML = (value[i] + "&#176;");
+      }
+    });
+  }
+
+</script>
+
+</head>
+
+<body>
+  <h1>Reading ROS</h1>
+  <p>This page is developed by roslib and javascript. The main purpose here is to read parameters from ROS.</p>
+  <p>Please check your Web Console for output.</p>
+  <br>
+  <p>You can read ROS parameters by pushing the "Get Data" button.</p>
+  <p>Have Fun!</p>
+
+  <h3>1. Read Joint Angles</h3>
+  <center>
+    <table id=t01>
+      <tr><td>Joint Name</td><td>&nbsp;&nbsp;Joint Value (&#176;)</td></tr>
+      <tr><td>Joint 0</td><td id="joint_value_0"></td></tr>
+      <tr><td>Joint 1</td><td id="joint_value_1"></td></tr>
+      <tr><td>Joint 2</td><td id="joint_value_2"></td></tr>
+      <tr><td>Joint 3</td><td id="joint_value_3"></td></tr>
+      <tr><td>Joint 4</td><td id="joint_value_4"></td></tr>
+      <tr><td>Joint 5</td><td id="joint_value_5"></td></tr>
+    </table>
+    <button id="refreshData" type="button" onclick="refreshData()">Get Data</button>
+  </center>
+  
+</body>
+</html>
