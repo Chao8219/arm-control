@@ -11,8 +11,10 @@ input_file_name = "test_data.txt"
 
 # print the working space location, to debug reading directory issue
 import os
-cwd = os.getcwd()  # Get the current working directory (cwd)
-files = os.listdir(cwd)  # Get all the files in that directory
+# Get the current working directory (cwd)
+cwd = os.getcwd()  
+# Get all the files in that directory
+files = os.listdir(cwd)  
 print("Files in '%s': %s" % (cwd, files))
 
 def runMe():
@@ -26,12 +28,16 @@ def runMe():
                 break
             updating_angles = read_data(input_file_name)
             param_sender.set(updating_angles)
-            time.sleep(0.1)
+            time.sleep(0.01)
     def read_data(file_name):
-        text_file = open(file_name, "r") # read-only
-        string_line0 = text_file.read().split(' ') # seperate with space
-        # a dummy tail is need in this txt file
-        # because by default, txt file will have a \n in the end
+        # use with to close file after reading automatically
+        # read only
+        with open(file_name, "r") as text_file:
+            # read strings that are seperated with space
+            # a dummy tail is needed in this txt file
+            # because by default, txt file will have a \n in the end
+            string_line0 = text_file.read().split(' ')
+        # convert strings into float numbers
         float_line0 = [float(string_line0[0]), float(string_line0[1]), 
                         float(string_line0[2]), float(string_line0[3]),
                         float(string_line0[4]), float(string_line0[5])]
