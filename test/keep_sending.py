@@ -17,7 +17,7 @@ cwd = os.getcwd()
 files = os.listdir(cwd)  
 print("Files in '%s': %s" % (cwd, files))
 
-def runMe():
+def run_me():
     ros_client = roslibpy.Ros(host = '161.253.72.254', port=9090)
     print("Connecting...")
     param_sender = roslibpy.Param(ros_client, '/pub_joint_param')
@@ -47,4 +47,4 @@ def runMe():
     ros_client.run_forever()
 
 if __name__ == '__main__':
-    runMe()
+    run_me()
