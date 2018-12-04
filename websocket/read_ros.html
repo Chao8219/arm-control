@@ -55,8 +55,6 @@ table#t01 {
     shutdown_signal.set(bool_signal);
   }
 
-
-
   // read paramets, "/wtf" is the test params name.
   // you don't need it in real code.
   var wtf_test = new ROSLIB.Param({
@@ -64,15 +62,14 @@ table#t01 {
     name: 'wtf'
   });
 
-  function refreshData(){
-    
+  // function for reading data
+  function refreshData(){    
     pub_joint_param.get(function(value){
       for(var i = 0; i <= 5; i++){
         document.getElementById("joint_value_" + i).innerHTML = (value[i] + "&#176;");
       }
     });
   }
-
 </script>
 
 </head>
@@ -81,7 +78,6 @@ table#t01 {
   <h1>Reading ROS</h1>
   <p>This page is developed by roslib and javascript. The main purpose here is to read parameters from ROS.</p>
   <p>Please check your Web Console for output.</p>
-  <br>
   <p>You can read ROS parameters by pushing the "Get Data" button.</p>
   <p>Have Fun!</p>
 

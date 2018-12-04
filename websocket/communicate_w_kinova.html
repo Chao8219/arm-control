@@ -203,22 +203,6 @@ table#t01 {
     shutdown_signal.set(bool_signal);
   }
 
-  // Read Files
-  function loadFile(o)
-  {
-    var fr = new FileReader();
-    fr.onload = function(e)
-    {
-      showDataFile(e, o);
-    };
-    fr.readAsText(o.files[0]);
-  }
-
-  function showDataFile(e, o)
-  {
-    document.getElementById("data").innerText = e.target.result;
-  }
-
   // Consistently Sending Values
   function pubParamConsist(index, correspond_value){
     pub_joint_default_array[index] = correspond_value;
@@ -248,30 +232,23 @@ table#t01 {
   }
 
   window.onload = resetValues;
-
-  function readCsv(){
-    var csv_result = document.getElementById("data").value;
-    var csv_to_array = $.csv.toArray(csv_result);
-    console.log(csv_to_array);
-  }
 </script>
 
 </head>
 
 <body>
   <h1>Kinova Remote Control</h1>
-  <p>This page is developed by roslib and javascript.</p>
-  <p>Please check your Web Console for output.</p>
-  <br>
-  <p>You can choose either way to control the robot: type in number or slide these range sliders.</p>
-  <p>Please notice that, everytime you reload this page, the robot will be folding back to default position.</p>
+  <p>This page is developed by roslib and javascript. Please check your Web Console for output.</p>
+  <p>
+    You can choose either way to control the robot: type in number or slide these range sliders. 
+    Please notice that, everytime you reload this page, the robot will be folding back to default position.
+  </p>
   <p>Have Fun!</p>
   <h3>1. Push Joint Values Manually</h3>
   <form name="ctrlPanel">
     <p>This a panel for transmitting data to ROS parameter server.</p>
     <p>Please type in angles for each joint in degree, and press send value to push them to ROS param server.</p>
     <p>When you are done playing, please press shutdown node.</p>
-    <p>Note: the values will be sent to ROS server through a list.</p>
     <center>
       <table id=t01>
         <tr><td>Joint Name</td><td>&nbsp;&nbsp;Joint Value (&#176;)</td><td>Range (&#176;)</td></tr>
@@ -304,14 +281,7 @@ table#t01 {
     </center>
   </form>
 
-  <br>
-  <h3>2. Push Joint Values through Data File</h3>
-  Select file to read <input type="file" onchange="loadFile(this)">
-  <pre id="data"></pre>
-  <button id="testTest" type="button" onclick="readCsv()">Click Me</button>
-
-  <br>
-  <h3>3. Push Joint Values Automatically</h3>
+  <h3>2. Push Joint Values Automatically</h3>
   <br>
   <div class="slidecontainer">
     <input type="range" min="-180.0" max="180" step="0.1" class="slider" id="joint_range_0" />
@@ -402,5 +372,17 @@ table#t01 {
     <button id="sendCommand" type="button" onclick="shutdownNode()">Shutdown Node</button>
   </center>
 
+
+  <br>
+  <h3>3. Read Local File</h3>
+  Select file to read <input type="file" onchange="loadFile(this)">
+  <pre id="data"></pre>
+  <p>
+    This is a demo for reading local files. The original idea is to read local files automatically and continuously.
+    However, due to security reason, web browser doesn't allow this type of action. Therefore, for that functionality, 
+    please go see the python scripts.
+  </p>
+
+  <br>
 </body>
 </html>
