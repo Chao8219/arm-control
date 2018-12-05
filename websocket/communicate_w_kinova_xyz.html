@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" content="width=device-width, initial-scale=1" />
+
+<!-- Customized Range Slider Style -->
+<style>
+  .slidecontainer {
+      width: 100%;
+  }
+
+  .slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 15px;
+      border-radius: 5px;
+      background: #d3d3d3;
+      outline: none;
+      opacity: 0.7;
+      -webkit-transition: .2s;
+      transition: opacity .2s;
+  }
+
+  .slider:hover {
+      opacity: 1;
+  }
+
+  .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: #4CAF50;
+      cursor: pointer;
+  }
+
+  .slider::-moz-range-thumb {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: #4CAF50;
+      cursor: pointer;
+}
+
+table#t01 {
+  text-align: center;
+}
+</style>
+
+<script
+			  src="http://code.jquery.com/jquery-3.3.1.min.js"
+			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+			  crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.8.9/jquery.csv.min.js"></script>
+
+<!-- ROSLIB Javascript Loading -->
+<script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+
+<script type="text/javascript" type="text/javascript">
+  // Connecting to ROS
+  // -----------------
+
+  // default url 'ws://local:9090'
+  var ros = new ROSLIB.Ros({
+    url : 'ws://161.253.72.254:9090'
+  });
+
+  ros.on('connection', function() {
+    console.log('Connected to websocket server.');
+  });
+
+  ros.on('error', function(error) {
+    console.log('Error connecting to websocket server: ', error);
+  });
+
+  ros.on('close', function() {
+    console.log('Connection to websocket server closed.');
+  });
+
+/* Useless block for now
+
+  // Publishing a Topic
+  // ------------------
+
+  var cmdVel = new ROSLIB.Topic({
+    ros : ros,
+    name : '/cmd_vel',
+    messageType : 'geometry_msgs/Twist'
+  });
+
+  var twist = new ROSLIB.Message({
+    linear : {
+      x : 0.1,
+      y : 0.2,
+      z : 0.3
+    },
+    angular : {
+      x : -0.1,
+      y : -0.2,
+      z : -0.3
+    }
+  });
+  cmdVel.publish(twist);
+
+  // Subscribing to a Topic
+  // ----------------------
+
+  var listener = new ROSLIB.Topic({
+    ros : ros,
+    name : '/listener',
+    messageType : 'std_msgs/String'
+  });
+
+  listener.subscribe(function(message) {
+    console.log('Received message on ' + listener.name + ': ' + message.data);
+    listener.unsubscribe();
+  });
+
+  // Calling a service
+  // -----------------
+
+  var addTwoIntsClient = new ROSLIB.Service({
+    ros : ros,
+    name : '/add_two_ints',
+    serviceType : 'rospy_tutorials/AddTwoInts'
+  });
+
+  var request = new ROSLIB.ServiceRequest({
+    a : 1,
+    b : 2
+  });
+
+  addTwoIntsClient.callService(request, function(result) {
+    console.log('Result for service call on '
+      + addTwoIntsClient.name
+      + ': '
+      + result.sum);
+  });
+
+  // Getting and setting a param value
+  // ---------------------------------
+
+  ros.getParams(function(params) {
+    console.log(params);
+  });
+
+  var maxVelX = new ROSLIB.Param({
+    ros : ros,
+    name : 'max_vel_y'
+  });
+
+  maxVelX.set(0.8);
+  maxVelX.get(function(value) {
+    console.log('MAX VAL: ' + value);
+  });
+
+*/
+
+  // push configuration to ROS Parameter Server
+  var pub_pose_xyz_param = new ROSLIB.Param({
+    ros : ros,
+    name: 'pub_pose_xyz_param'
+  });
+
+  // Publish default value
+  var pub_pose_xyz_param_default = [-0.14, -0.01, 0.20];
+  pub_pose_xyz_param.set(pub_pose_xyz_param_default);
+
+  function pubParam(){
+    console.log('Data is setting to the ROS parameter server.');
+    
+    // initialization
+    var pub_x = 0.0, pub_y = 0.0, pub_z = 0.0;
+    
+    // get values
+    pub_x = 0.0 + Number(document.getElementById('pub_x').value);
+    pub_y = 0.0 + Number(document.getElementById('pub_y').value);
+    pub_z = 0.0 + Number(document.getElementById('pub_z').value);
+
+    var pub_pose_xyz_param_array = [pub_x, pub_y, pub_z];
+    console.log('The vector you are sending is: [' + pub_pose_xyz_param_array + ']');
+
+    pub_pose_xyz_param.set(pub_pose_xyz_param_array);
+  }
+
+  // shutdown ROS node remotely
+  var shutdown_signal = new ROSLIB.Param({
+    ros : ros,
+    name: 'shutdown_signal'
+  });
+
+  var bool_signal = false;
+
+  function shutdownNode(){
+    console.log('ROS node is shutting down.');
+    bool_signal = true;
+    shutdown_signal.set(bool_signal);
+  }
+
+  // Reset Values to Default
+  var pub_pose_xyz_param_default_string = ["-0.14", "-0.01", "0.20"];
+  function resetValues(){
+    document.getElementById("pub_x").value = pub_pose_xyz_param_default_string[0];
+    document.getElementById("pub_y").value = pub_pose_xyz_param_default_string[1];
+    document.getElementById("pub_z").value = pub_pose_xyz_param_default_string[2];
+  }
+
+  window.onload = resetValues;
+</script>
+
+</head>
+
+<body>
+  <h1>Kinova Remote Control</h1>
+  <p>This page is developed by roslib and javascript. Please check your Web Console for output.</p>
+  <p>
+    This page is for controlling robot by entering the end-effector x,y,z values.
+  </p>
+  <p>Have Fun!</p>
+  <h3>1. Push XYZ Values Manually</h3>
+  <form name="ctrlPanel">
+    <p>This a panel for transmitting data to ROS parameter server.</p>
+    <p>Please type in x,y,z points, and press send value to push them to ROS param server.</p>
+    <p>When you are done playing, please press shutdown node.</p>
+    <center>
+      <table id=t01>
+        <tr><td>Axis Name</td><td>&nbsp;&nbsp;Value</td><td>Range</td></tr>
+        <tr><td>x</td>
+          <td><input id="pub_x" name="pub_x" type="text" size="1.0"/></td>
+          <td>N/A</td></tr>
+        <tr><td>y</td>
+          <td><input id="pub_y" name="pub_y" type="text" size="1.0"/></td>
+          <td>N/A</td></tr>
+        <tr><td>z</td>
+          <td><input id="pub_z" name="pub_z" type="text" size="1.0"/></td>
+          <td>N/A</td></tr>
+        <tr><td></td><td></td><td></td></tr>
+      </table>
+      <br>
+      <button id="sendMsg" type="button" onclick="pubParam()">Send Values</button>
+      <button id="reset" type="button" onclick="resetValues()">Reset Values</button>
+      <br>
+      <button id="sendCommand" type="button" onclick="shutdownNode()">Shutdown Node</button>
+    </center>
+  </form>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<launch>
+    <param name="shutdown_signal" value="false" />
+    <node pkg="kinova_arm_moveit_demo" type="sar_project" name="sar_project" output="screen" />
+</launch>
