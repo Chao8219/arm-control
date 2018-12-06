@@ -16,6 +16,10 @@ The package that we use to communicate is rosbridge. To have a good communicatio
 
 &nbsp;&nbsp;[1 Run Order](#1-run-order)
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[1.1 ROS End](#11-ros-end)
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[1.2 Remote End](#12-remote-end)
+
 &nbsp;&nbsp;[2 Useful Pages for Rosbridge](#2-useful-pages-for-rosbridge)
 
 &nbsp;&nbsp;[3 Todo List](#3-todo-list)
@@ -44,19 +48,33 @@ For the use of python script, you need to use `pip install roslibpy` to obtain t
 
 ## 1 Run Order
 
-ROS End
+### 1.1 ROS End
 
 1. Enter command in terminal as follow: `roslaunch arm-control sar_rosbridge_websocket.launch` to start websocket.
 
 2. Enter command in terminal as follow: `roslaunch arm-control virtual_j2n6s300.launch` to start RViz.
 
-3. Enter command in terminal as follow: `roslaunch arm-control moveit_remote.launch` to start movement.
+3. Enter command in terminal as follow: `roslaunch arm-control moveit_remote.launch` to start movement. And if you want to control through end-effector position, please use `roslaunch arm-control moveit_remote_xyz.launch` instead.
 
-Remote PC (any platform):
+[Back to Top](#contents)
 
-1. Open "arm-control/websocket/communicate_w_kinova.html" to connect with ROS end.
+### 1.2 Remote End
 
-2. Edit the joint values, then push it to control. or just slide the range control to control it in real time.
+#### 1.2.1 For JS html page control
+
+Note: In JS html page, you couldn't read file directly while you are running some scripts due to web browser security issue.
+
+1. Open "arm-control/websocket/html/communicate_w_kinova.html" to connect with ROS end. And if you want to control through end-effector position, please use "arm-control/websocket/html/communicate_w_kinova_xyz.html"
+
+2. Edit the values, then push it to control. or just slide the range control to control it in real time.
+
+#### 1.2.2 For direct files reading and writting
+
+Note: Although the I should inclued a jupyter notebook script doing the same job to help people to have a better understanding of the code, there is something going wrong with my jupyter kernel in the Ubuntu 14.04. It might be done in the future.
+
+1. Install roslibpy module by `pip install roslibpy`
+
+2. Run the python script inside "/websocket/py/" to communicate.
 
 [Back to Top](#contents)
 
@@ -77,8 +95,6 @@ https://answers.ros.org/question/250959/connecting-different-computers-via-rosbr
 ## 3 Todo List
 
 - [x] Add end-effector coordinate control
-- [ ] Complete automatic file reading in JS page.(for .txt)
-- [ ] Complete automatic file reading in JS page.(for .csv)
 - [x] Update initial position to "Starting Pose" in JS page
 - [ ] License issue with the kinova-ros pacakge
 - [x] Complete constantly reading and writting files in py script.
